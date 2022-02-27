@@ -1,0 +1,20 @@
+<!-- This file will bring up the robot description only, not used within the bringup! -->
+<!-- also you will enable/disable all sensors for the model -->
+<launch>
+  <!-- arguments for the realsense camera to load -->
+  <!--<arg name="pointcloud_enable" default="true" />
+  <arg name="realsense_enable" default="true" /> -->
+  
+  <param name="robot_description" command="$(find xacro)/xacro '$(find asb_description)/urdf/asb.urdf.xacro'" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find asb_description)/rviz/world.rviz"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="False"/>
+  </node>
+
+</launch>
+
+

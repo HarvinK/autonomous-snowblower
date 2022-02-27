@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<robot name="asb" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Xacro arguments for realsense d455 camera -->
+  <xacro:arg name="realsense_enable" default="true" />
+  <xacro:arg name="pointcloud_enable" default="true" />
+  <xacro:arg name="use_nominal_extrinsics" default="false"/>
+
+  <!-- Xacro arguments for gps -->
+  <!-- <xacro:arg name="gps_enable" default="true" /> -->
+  
+  <!-- Included URDF/XACRO Files -->
+  <xacro:include filename="$(find realsense2_description)/urdf/_d455.urdf.xacro"/>
+  <xacro:include filename="$(find asb_description)/urdf/macros.xacro"/>
+
+<!--=========================Defining Materials===================================--> 
+ <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+
+ <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+ <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+
+<material name="green">
+    <color rgba="0 0.8 0 1"/>
+  </material>
+<!--============================================================-->
+ <!-- Root link of ASB -->
+
+ <link name="base_link" />
+ 
+<!--============================================================-->
+ <link name="chassis_link">
+ <!--  <origin xyz="0 0 0.05525" rpy="0 0 0" /> -->
+    <visual>
+     <origin xyz="0 0 0.03937" rpy="0 0 0" />
+      <geometry>
+	<box size="0.6096 0.4572 0.07874"/>
+      </geometry>
+     <material name="black"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.6096 0.4572 0.2267"/>
+      </geometry>
+      <origin xyz="0 0 0.11335" rpy="0 0 0" />
+    </collision>
+  </link>
+
+<joint name="chassis_joint" type="fixed">
+    <origin xyz="0 0 0.05525" rpy="0 0 0"/>
+    <parent link="base_link" />
+    <child link="chassis_link" />
+  </joint>
+<!--============================================================-->
+
+  <!-- Link and Joint for shaft  -->
+  <xacro:link_shaft name="back_left_shaft_link" origin_xyz="0 0.0475 0"/>
+  <xacro:joint_shaft name="back_left_shaft_joint" child="back_left_shaft_link" origin_xyz="-0.20319 0.2286 0.04382"/>
+
+  <!-- Link and Joint and Transmission for wheel  -->
+  <xacro:link_wheel name="back_left_wheel_link"/>
+  <xacro:joint_wheel name="back_left_wheel" parent="back_left_shaft_link" child="back_left_wheel_link" origin_xyz="0 0.039 0"/>
+  <!-- <xacro:transmission name="back_left_wheel"/> -->
+   	
+	<transmission name="back_left_wheel_trans" type="SimpleTransmission">
+		<type>transmission_interface/SimpleTransmission</type>
+		<actuator name="back_left_wheel_motor">
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+		<joint name="back_left_wheel">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+	</transmission>
+
+<!--============================================================-->
+
+  <!-- Link and Joint for shaft  -->
+  <xacro:link_shaft name="back_right_shaft_link" origin_xyz="0 -0.0475 0"/>
+  <xacro:joint_shaft name="back_right_shaft_joint" child="back_right_shaft_link" origin_xyz="-0.20319 -0.2286 0.04382"/>
+
+  <!-- Link and Joint and Transmission for wheel  -->
+  <xacro:link_wheel name="back_right_wheel_link"/>
+  <xacro:joint_wheel name="back_right_wheel" parent="back_right_shaft_link" child="back_right_wheel_link" origin_xyz="0 -0.039 0"/>
+   <!-- <xacro:transmission name="back_left_wheel"/> -->
+
+	<transmission name="back_right_wheel_trans" type="SimpleTransmission">
+		<type>transmission_interface/SimpleTransmission</type>
+		<actuator name="back_right_wheel_motor">
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+		<joint name="back_right_wheel">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+	</transmission>
+
+<!--============================================================-->
+  <!-- Link and Joint for shaft  -->
+  <xacro:link_shaft name="front_left_shaft_link" origin_xyz="0 0.0475 0"/>
+  <xacro:joint_shaft name="front_left_shaft_joint" child="front_left_shaft_link" origin_xyz="0.20319 0.2286 0.04382"/>
+
+  <!-- Link and Joint and Transmission for wheel  -->
+  <xacro:link_wheel name="front_left_wheel_link"/>
+  <xacro:joint_wheel name="front_left_wheel" parent="front_left_shaft_link" child="front_left_wheel_link" origin_xyz="0 0.039 0"/>
+  <!-- <xacro:transmission name="back_left_wheel"/> -->
+
+	<transmission name="front_left_wheel_trans" type="SimpleTransmission">
+		<type>transmission_interface/SimpleTransmission</type>
+		<actuator name="front_left_wheel_motor">
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+		<joint name="front_left_wheel">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+	</transmission>
+
+<!--============================================================-->
+
+  <!-- Link and Joint for shaft  -->
+  <xacro:link_shaft name="front_right_shaft_link" origin_xyz="0 -0.0475 0"/>
+  <xacro:joint_shaft name="front_right_shaft_joint" child="front_right_shaft_link" origin_xyz="0.20319 -0.2286 0.04382"/>
+
+  <!-- Link and Joint and Transmission for wheel  -->
+  <xacro:link_wheel name="front_right_wheel_link"/>
+  <xacro:joint_wheel name="front_right_wheel" parent="front_right_shaft_link" child="front_right_wheel_link" origin_xyz="0 -0.039 0"/>
+  <!-- <xacro:transmission name="back_left_wheel"/> -->
+	
+	<transmission name="front_right_wheel_trans" type="SimpleTransmission">
+		<type>transmission_interface/SimpleTransmission</type>
+		<actuator name="front_right_wheel_motor">
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+		<joint name="front_right_wheel">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+	</transmission>
+
+<!--========================AUGER BASE====================================-->
+
+ <link name="auger">
+    <visual>
+      <geometry>
+       <box size="0.254 0.3556 0.2794"/>
+      </geometry>
+     <origin rpy="0 0 0" xyz="0 0 0"/>
+     <material name="blue"/> 
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.26 0.36 0.29"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="auger_mount" type="fixed">
+    <parent link="chassis_link"/>
+    <child link="auger"/>
+    <origin xyz="0.4318 0 0.08445"/>
+  </joint>
+<!--==================REALSENSE CAMERA==========================================-->
+
+  <xacro:if value="$(arg realsense_enable)">
+    <xacro:sensor_d455 name="camera" parent="auger" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+      <origin xyz="0.127 0 0.12065" rpy="0 0 0"/>
+    </xacro:sensor_d455>
+  </xacro:if>
+
+<!--=====================AUGER CHUTE=======================================-->
+ <link name="chute">
+    <visual>
+      <geometry>
+        <cylinder length="0.1659" radius="0.0889"/>
+      </geometry>
+     <origin rpy="0 0 0" xyz="0 0 0"/>
+     <material name="green"/> 
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.1700" radius="0.09"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="chute_joint" type="fixed">
+    <parent link="auger"/>
+    <child link="chute"/>
+    <origin xyz="0 0 0.22265"/>
+  </joint>
+</robot>

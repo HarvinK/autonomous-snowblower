@@ -1,0 +1,18 @@
+<!-- This file will bring up the robot description only     -->
+<!-- also you will enable/disable all sensors for the model -->
+<launch>
+
+  <!-- parses the urdf to the robot description in parameter server -->
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find asb_description)/urdf/asb.urdf.xacro'" />
+
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0.5"/>
+
+  <node name="mybot_spawn" pkg="robot_state_publisher" type="state_publisher"/>
+
+  <node name="rviz" pkg="rviz" type="rviz"/>
+
+</launch>
+
+

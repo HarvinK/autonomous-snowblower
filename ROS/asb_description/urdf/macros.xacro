@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot name="asb_macros" xmlns:xacro="http://ros.org/wiki/xacro">
+ 
+  <xacro:macro name="link_shaft" params="name origin_xyz">
+	<link name="${name}">
+	    <visual>
+	      <geometry>
+	       <cylinder length="0.095" radius="0.00733"/>
+	      </geometry>
+	     <origin rpy="0 1.57075 1.57075" xyz="${origin_xyz}"/>
+	    <material name="white"/> 
+	   </visual>
+	   <collision>
+	      <geometry>
+		<cylinder length="0.1" radius="0.008"/>
+	      </geometry>
+	      <origin rpy="0 1.57075 1.57075" xyz="${origin_xyz}"/>
+	   </collision>
+	 </link>
+   </xacro:macro>
+
+   <xacro:macro name="joint_shaft" params="name child origin_xyz">
+	<joint name="${name}" type="fixed">
+	  <parent link="chassis_link"/>
+	  <child link="${child}"/>
+	  <origin xyz="${origin_xyz}"/>
+	</joint>
+   </xacro:macro>
+
+   <xacro:macro name="link_wheel" params="name">
+	 <link name="${name}">
+	    <visual>
+	      <geometry>
+	        <cylinder length="0.052" radius="0.09525"/>
+	      </geometry>
+	    <origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+	    <material name="blue"/> 
+	    </visual>
+	    <collision>
+	      <geometry>
+		<cylinder length="0.06" radius="0.09525"/>
+	      </geometry>
+	      <origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+	    </collision>
+	 </link>
+   </xacro:macro>
+
+   <xacro:macro name="joint_wheel" params="name parent child origin_xyz">
+	<joint name="${name}" type="continuous">
+	  <parent link="${parent}"/>
+	  <child link="${child}"/>
+	  <origin xyz="${origin_xyz}"/>
+	  <axis rpy="0 0 0" xyz="0 1 0" />
+	</joint>
+  </xacro:macro>
+   
+<!--
+   <xacro:macro name="transmission" params="name">   	
+	<transmission name="${name}_trans" type="SimpleTransmission">
+		<type>transmission_interface/SimpleTransmission</type>
+		<actuator name="${name}_motor">
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+		<joint name="${name}">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+	</transmission>
+   </xacro:macro>
+-->
+
+</robot>

@@ -1,0 +1,29 @@
+ <link name="camera_link">
+    <visual>
+      <geometry>
+       <box size="0.05 0.1778 0.0254"/>
+      </geometry>
+     <origin rpy="0 0 0" xyz="0 0 0"/>
+     <material name="green"/> 
+    </visual>
+     <collision>
+      <geometry>
+        <box size="0.06 0.18 0.026"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="camera_mount" type="fixed">
+    <parent link="auger"/>
+    <child link="camera_link"/>
+    <origin xyz="0.127 0 0.12065"/>
+  </joint>
+
+<joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_link_optical"/>
+    <origin rpy="0 -1.57075 1.57075" xyz="0 0 0"/>
+  </joint>
+
+ <link name="camera_link_optical">
+  </link>

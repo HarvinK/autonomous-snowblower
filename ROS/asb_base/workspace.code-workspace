@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../../Documents/PlatformIO/Projects/AutoSnowBlower"
+		},
+		{
+			"name": "ArduinoTest",
+			"path": "../../../Documents/PlatformIO/Projects/ArduinoTest/ArduinoTest"
+		}
+	],
+	"settings": {}
+}

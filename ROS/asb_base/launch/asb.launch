@@ -1,0 +1,26 @@
+<launch>
+  <!--param name="robot_description" command="$(find xacro)/xacro '$(find asb_description)/urdf/asb.urdf.xacro'"/-->
+
+  <!--include file="$(find asb_description)/launch/description.launch"/-->
+
+  <param name="robot_description" command="$(find xacro)/xacro '$(find asb_description)/urdf/asb.urdf.xacro'" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find asb_description)/rviz/world.rviz"/-->
+
+  <!--Load Hardware Interface Configuration to param server -->
+   <rosparam file="$(find asb_control)/config/hardware_interface.yaml" command="load"/>
+
+  <!-- Run the asb_base -->
+  <!-- This will create the asb hardware interface and instantiate a new controller manager with it -->
+  <node name="asb_base" pkg="asb_base" type="asb_base" 
+        output="screen"/>
+
+  <!--Load Hardware Interface Configuration to param server -->
+  <rosparam file="$(find asb_control)/config/asb_control.yaml" command="load"/>
+  
+    <!-- launch the controller manager for ros control -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" args="joint_state_controller asb_velocity_controller"/> 
+</launch>

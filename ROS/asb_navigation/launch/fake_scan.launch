@@ -1,0 +1,12 @@
+<launch>
+    <!-- scan from the camera -->
+    <node pkg="nodelet" type="nodelet" name="depthimage_to_laserscan" args="load depthimage_to_laserscan/DepthImageToLaserScanNodelet realsense2_camera_manager">
+      <remap from="image"       to="/camera/aligned_depth_to_color/image_raw"/>
+      <!--remap from="camera_info" to="/camera/aligned_depth_to_color/camera_info"/-->
+      <!--remap from="image"       to="/camera/depth/image_rect_raw"/>
+      <remap from="camera_info" to="/camera/depth/camera_info"/-->
+      <!--remap from="scan"        to="/scan"/>
+      <param name="range_max" type="double" value="6"/-->
+      <param name="output_frame_id" type="str" value="/camera_aligned_depth_to_color_frame"/>
+    </node> 
+</launch>

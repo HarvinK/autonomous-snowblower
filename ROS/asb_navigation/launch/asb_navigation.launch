@@ -1,0 +1,14 @@
+<launch>
+    <group ns="planner">
+        <remap from="map" to="/rtabmap/proj_map"/>
+        <remap from="move_base_simple/goal" to="/planner_goal"/>
+      <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+         <param name="controller_frequency" value="5" />  
+         <rosparam file="$(find asb_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+         <rosparam file="$(find asb_navigation)/launch/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+         <rosparam file="$(find asb_navigation)/launch/config/local_costmap_params.yaml" command="load" />
+         <rosparam file="$(find asb_navigation)/launch/config/global_costmap_params.yaml" command="load" />
+         <rosparam file="$(find asb_navigation)/launch/config/dwa_local_planner_params.yaml" command="load" />  
+      </node>
+    </group>
+</launch>

@@ -1,0 +1,75 @@
+<launch>
+ <!--arg name="rtabmap_args" default="" />
+ <arg name="localization" default="false" /-->
+
+ <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
+   <arg name="args" value="--delete_db_on_start --Optimizer/GravitySigma 0.3"/>
+   <arg name="frame_id"          value="base_link"/> 
+   <arg name="odom_frame_id"     value="odom"/>
+   <arg name="rgb_topic" value="/camera/color/image_raw"/>
+   <arg name="depth_topic" value="/camera/aligned_depth_to_color/image_raw"/>
+   <arg name="camera_info_topic" value="/camera/color/camera_info"/>
+   <arg name="depth_camera_info_topic" value="/camera/depth/camera_info"/>
+   <arg name="subscribe_scan"    value="true"/>
+   <arg name="scan_topic"        value="/scan"/>
+   <arg name="visual_odometry"   value="true"/> <!--false-->
+   <!--arg name="odom_topic"        value=""/--> <!--/asb_velocity_controller/odom-->
+   <arg name="approx_sync"       value="false"/>
+   <arg name="imu_topic"         value="/rtabmap/imu"/> <!-- if getting odometry filtered then no point -->
+   <!--arg name="wait_imu_to_init"  value="true"/-->
+   <arg name="rtabmapviz"        value="false"/>
+   <arg name="rviz"              value="true"/>
+ </include>
+
+  <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan">
+    <remap from="image"     to="/camera/aligned_depth_to_color/image_raw"/>
+    <remap from="camera_info" to="/camera/depth/camera_info"/>
+    <remap from="scan" to="/scan"/>
+    <param name="range_max" type="double" value="6"/>
+  </node>
+
+  <!-- ROS navigation stack move_base -->
+ <group ns="planner">
+     <remap from="scan"                  to="/scan"/>
+     <remap from="obstacles_cloud"       to="/obstacles_cloud"/>
+     <remap from="ground_cloud"          to="/ground_cloud"/>
+     <remap from="map"                   to="/map"/>
+     <remap from="move_base_simple/goal" to="/rtabmap/goal_out"/>
+        
+     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+      <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    	<rosparam file="$(find asb_navigation)/config/costmap_common_params_2d.yaml"  command="load" ns="global_costmap" />
+     	<rosparam file="$(find asb_navigation)/config/costmap_common_params_2d.yaml"  command="load" ns="local_costmap" />
+    	<rosparam file="$(find asb_navigation)/config/local_costmap_params.yaml"      command="load" ns="local_costmap" />
+    	<rosparam file="$(find asb_navigation)/config/global_costmap_params.yaml"     command="load" ns="global_costmap"/>
+    	<rosparam file="$(find asb_navigation)/config/dwa_local_planner_params.yaml" command="load" />
+     </node>
+  </group>
+
+  <group ns="camera">
+   <!-- for the planner -->
+    <node pkg="nodelet" type="nodelet" name="obstacle_nodelet_manager"  args="manager" output="screen"/>
+    <node pkg="nodelet" type="nodelet" name="points_xyz_planner" args="load rtabmap_ros/point_cloud_xyz obstacle_nodelet_manager">
+      <remap from="depth/image"        to="aligned_depth_to_color/image_raw"/>
+      <remap from="depth/camera_info"  to="depth/camera_info"/>
+      <remap from="cloud"              to="cloudXYZ" />.
+
+      <param name="decimation"  type="int" value="2"/>
+      <param name="max_depth"   type="double" value="6.0"/>
+      <param name="voxel_size"  type="double" value="0.02"/>
+    </node>
+  
+    <node pkg="nodelet" type="nodelet" name="obstacles_detection" args="load rtabmap_ros/obstacles_detection obstacle_nodelet_manager">
+      <remap from="cloud"     to="cloudXYZ"/>
+      <remap from="obstacles" to="/obstacles_cloud"/>
+      <remap from="ground"    to="/ground_cloud"/>
+
+      <param name="frame_id"             type="string" value="base_link"/>		
+      <param name="map_frame_id"         type="string" value="map"/>
+      <param name="wait_for_transform"   type="bool" value="true"/>
+      <param name="min_cluster_size"     type="int" value="20"/>
+      <param name="max_obstacles_height" type="double" value="0.4"/>
+      <param name="ground_normal_angle"  type="double" value="0.1"/>
+    </node>
+ </group>
+</launch>

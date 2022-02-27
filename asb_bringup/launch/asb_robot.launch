@@ -1,0 +1,21 @@
+<launch>
+
+  <include file="$(find asb_base)/launch/asb.launch"/>
+
+  <node name="serial_node" pkg="rosserial_python" type="serial_node.py">
+    <param name="port" value="/dev/ttyACM0"/>
+    <param name="baud" value="115200"/>
+  </node>
+
+  <!--node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen"/>
+     <remap from="/cmd_vel" to="/asb_velocity_controller/cmd_vel"/>
+  </node-->
+
+  <!--node name="teleop" pkg="asb_control" type="teleop" output="screen">
+     <remap from="teleop/cmd_vel" to="/asb_velocity_controller/cmd_vel"/>
+  </node-->
+
+  <!--node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/-->
+
+  <!--Include seperate launch file for the realsense node-->
+</launch>
